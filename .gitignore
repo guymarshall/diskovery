@@ -1,0 +1,10 @@
+/target
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# APP
+recovered_files/
+DO_NOT_COMMIT/

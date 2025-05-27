@@ -10,7 +10,7 @@ This project is in **early development**. Currently, there is no functionality i
 
 - Recover lost or deleted files from disks, partitions, and removable media (HDDs, SSDs, SD cards, USB memory sticks etc.)
 - Support for multiple file systems (planned: ext4, FAT32, exFAT, NTFS, etc.)
-- User-friendly CLI interface (GUI will be considered in the future)
+- GUI for selecting location, filetype etc
 
 ## 🔧 Development Roadmap (planned)
 
@@ -18,6 +18,5 @@ This project is in **early development**. Currently, there is no functionality i
 - [ ] File system detection and metadata parsing
 - [ ] Recovery of recently deleted files
 - [ ] Output of recoverable files and export options
-- [ ] GUI (create to separate checklist)
 
 Stay tuned for progress and contributions!

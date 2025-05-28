@@ -4,12 +4,18 @@ use egui::{Button, Ui, vec2};
 enum Screen {
     Locations,
     InternalDrives,
+    ExternalDrives,
+    SdCard,
+    NetworkDrive,
 }
 
 struct MyApp {
     screen: Screen,
     locations: Vec<&'static str>,
     internal_drives: Vec<&'static str>,
+    external_drives: Vec<&'static str>,
+    sd_cards: Vec<&'static str>,
+    network_drives: Vec<&'static str>,
 }
 
 impl Default for MyApp {
@@ -18,12 +24,15 @@ impl Default for MyApp {
             screen: Screen::Locations,
             locations: vec![
                 "Internal Drive",
-                "External drive e.g. memory stick, external SSD",
+                "External Drive",
                 "SD Card",
                 "Network Drive",
             ],
             // TODO: replace with real drive detection
             internal_drives: vec!["/dev/sda", "/dev/nvme0n1"],
+            external_drives: vec!["/dev/sdb", "/dev/sdc"],
+            sd_cards: vec!["/dev/mmcblk0", "/dev/mmcblk1"],
+            network_drives: vec!["//network/share1", "//network/share2"],
         }
     }
 }
@@ -55,6 +64,12 @@ impl eframe::App for MyApp {
                             if ui.add(button).clicked() {
                                 if *location == "Internal Drive" {
                                     self.screen = Screen::InternalDrives;
+                                } else if *location == "External Drive" {
+                                    self.screen = Screen::ExternalDrives;
+                                } else if *location == "SD Card" {
+                                    self.screen = Screen::SdCard;
+                                } else if *location == "Network Drive" {
+                                    self.screen = Screen::NetworkDrive;
                                 } else {
                                     println!("{} clicked", location);
                                     // TODO: handle other locations
@@ -75,12 +90,85 @@ impl eframe::App for MyApp {
 
                     self.internal_drives.iter().enumerate().for_each(
                         |(i, drive): (usize, &&str)| {
-                            let button =
+                            let button: Button<'_> =
                                 Button::new(*drive).min_size(vec2(ui.available_width(), 40.0));
                             if ui.add(button).clicked() {
                                 println!("{} clicked", drive);
                             }
                             if i < self.internal_drives.len() - 1 {
+                                ui.add_space(8.0);
+                            }
+                        },
+                    );
+
+                    ui.add_space(16.0);
+                    if ui.add(Button::new("Back")).clicked() {
+                        self.screen = Screen::Locations;
+                    }
+                });
+            }
+            Screen::ExternalDrives => {
+                egui::CentralPanel::default().show(context, |ui: &mut Ui| {
+                    ui.heading("Select an external drive:");
+                    ui.add_space(16.0);
+
+                    self.external_drives.iter().enumerate().for_each(
+                        |(i, drive): (usize, &&str)| {
+                            let button: Button<'_> =
+                                Button::new(*drive).min_size(vec2(ui.available_width(), 40.0));
+                            if ui.add(button).clicked() {
+                                println!("{} clicked", drive);
+                            }
+                            if i < self.external_drives.len() - 1 {
+                                ui.add_space(8.0);
+                            }
+                        },
+                    );
+
+                    ui.add_space(16.0);
+                    if ui.add(Button::new("Back")).clicked() {
+                        self.screen = Screen::Locations;
+                    }
+                });
+            }
+            Screen::SdCard => {
+                egui::CentralPanel::default().show(context, |ui: &mut Ui| {
+                    ui.heading("Select an SD Card:");
+                    ui.add_space(16.0);
+
+                    self.sd_cards
+                        .iter()
+                        .enumerate()
+                        .for_each(|(i, card): (usize, &&str)| {
+                            let button: Button<'_> =
+                                Button::new(*card).min_size(vec2(ui.available_width(), 40.0));
+                            if ui.add(button).clicked() {
+                                println!("{} clicked", card);
+                            }
+                            if i < self.sd_cards.len() - 1 {
+                                ui.add_space(8.0);
+                            }
+                        });
+
+                    ui.add_space(16.0);
+                    if ui.add(Button::new("Back")).clicked() {
+                        self.screen = Screen::Locations;
+                    }
+                });
+            }
+            Screen::NetworkDrive => {
+                egui::CentralPanel::default().show(context, |ui: &mut Ui| {
+                    ui.heading("Select a Network Drive:");
+                    ui.add_space(16.0);
+
+                    self.network_drives.iter().enumerate().for_each(
+                        |(i, drive): (usize, &&str)| {
+                            let button: Button<'_> =
+                                Button::new(*drive).min_size(vec2(ui.available_width(), 40.0));
+                            if ui.add(button).clicked() {
+                                println!("{} clicked", drive);
+                            }
+                            if i < self.network_drives.len() - 1 {
                                 ui.add_space(8.0);
                             }
                         },

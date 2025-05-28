@@ -62,17 +62,12 @@ impl eframe::App for MyApp {
                             let button: Button<'_> = Button::new(*location)
                                 .min_size(vec2(ui.available_width(), button_height));
                             if ui.add(button).clicked() {
-                                if *location == "Internal Drive" {
-                                    self.screen = Screen::InternalDrives;
-                                } else if *location == "External Drive" {
-                                    self.screen = Screen::ExternalDrives;
-                                } else if *location == "SD Card" {
-                                    self.screen = Screen::SdCard;
-                                } else if *location == "Network Drive" {
-                                    self.screen = Screen::NetworkDrive;
-                                } else {
-                                    println!("{} clicked", location);
-                                    // TODO: handle other locations
+                                match *location {
+                                    "Internal Drive" => self.screen = Screen::InternalDrives,
+                                    "External Drive" => self.screen = Screen::ExternalDrives,
+                                    "SD Card" => self.screen = Screen::SdCard,
+                                    "Network Drive" => self.screen = Screen::NetworkDrive,
+                                    _ => panic!("Unknown location: {}", location),
                                 }
                             }
                             if i < button_count - 1 {

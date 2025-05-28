@@ -3,6 +3,15 @@ use std::process::exit;
 use eframe::{CreationContext, NativeOptions, egui};
 use egui::{Button, Ui, vec2};
 
+// const UNFINISHED_LOCATIONS: [&str; 4] = [
+//     "Internal Drives",
+//     "External Drives",
+//     "SD Cards",
+//     "Network Drives",
+// ];
+
+const UNFINISHED_LOCATIONS: [&str; 0] = [];
+
 enum Screen {
     Locations,
     InternalDrives,
@@ -25,10 +34,10 @@ impl Default for MyApp {
         Self {
             screen: Screen::Locations,
             locations: vec![
-                "Internal Drive",
-                "External Drive",
-                "SD Card",
-                "Network Drive",
+                "Internal Drives",
+                "External Drives",
+                "SD Cards",
+                "Network Drives",
             ],
             // TODO: replace with real drive detection
             internal_drives: vec!["/dev/sda", "/dev/nvme0n1"],
@@ -70,12 +79,15 @@ impl eframe::App for MyApp {
                         .for_each(|(i, location): (usize, &&str)| {
                             let button: Button<'_> = Button::new(*location)
                                 .min_size(vec2(ui.available_width(), button_height));
-                            if ui.add(button).clicked() {
+
+                            let is_enabled: bool = !UNFINISHED_LOCATIONS.contains(location);
+
+                            if ui.add_enabled(is_enabled, button).clicked() {
                                 match *location {
-                                    "Internal Drive" => self.screen = Screen::InternalDrives,
-                                    "External Drive" => self.screen = Screen::ExternalDrives,
-                                    "SD Card" => self.screen = Screen::SdCard,
-                                    "Network Drive" => self.screen = Screen::NetworkDrive,
+                                    "Internal Drives" => self.screen = Screen::InternalDrives,
+                                    "External Drives" => self.screen = Screen::ExternalDrives,
+                                    "SD Cards" => self.screen = Screen::SdCard,
+                                    "Network Drives" => self.screen = Screen::NetworkDrive,
                                     _ => panic!("Unknown location: {}", location),
                                 }
                             }

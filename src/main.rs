@@ -1,3 +1,5 @@
+use std::process::exit;
+
 use eframe::{CreationContext, NativeOptions, egui};
 use egui::{Button, Ui, vec2};
 
@@ -53,6 +55,12 @@ impl eframe::App for MyApp {
                         padding * 2.0 + button_spacing * (button_count as f32 - 1.0);
                     let button_height: f32 =
                         ((available_height - total_spacing) / button_count as f32).max(32.0);
+
+                    ui.add_space(padding);
+
+                    if ui.add(Button::new("Exit")).clicked() {
+                        exit(0);
+                    }
 
                     ui.add_space(padding);
 

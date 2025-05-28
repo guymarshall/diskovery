@@ -39,6 +39,8 @@ impl Default for MyApp {
 
 impl eframe::App for MyApp {
     fn update(&mut self, context: &egui::Context, _frame: &mut eframe::Frame) {
+        let padding: f32 = 16.0;
+
         match self.screen {
             Screen::Locations => {
                 egui::CentralPanel::default().show(context, |ui: &mut Ui| {
@@ -46,7 +48,6 @@ impl eframe::App for MyApp {
 
                     let available_height: f32 = ui.available_height();
                     let button_count: usize = self.locations.len();
-                    let padding: f32 = 16.0;
                     let button_spacing: f32 = 12.0;
                     let total_spacing: f32 =
                         padding * 2.0 + button_spacing * (button_count as f32 - 1.0);
@@ -81,7 +82,7 @@ impl eframe::App for MyApp {
             Screen::InternalDrives => {
                 egui::CentralPanel::default().show(context, |ui: &mut Ui| {
                     ui.heading("Select an internal drive:");
-                    ui.add_space(16.0);
+                    ui.add_space(padding);
 
                     self.internal_drives.iter().enumerate().for_each(
                         |(i, drive): (usize, &&str)| {
@@ -96,7 +97,7 @@ impl eframe::App for MyApp {
                         },
                     );
 
-                    ui.add_space(16.0);
+                    ui.add_space(padding);
                     if ui.add(Button::new("Back")).clicked() {
                         self.screen = Screen::Locations;
                     }
@@ -105,7 +106,7 @@ impl eframe::App for MyApp {
             Screen::ExternalDrives => {
                 egui::CentralPanel::default().show(context, |ui: &mut Ui| {
                     ui.heading("Select an external drive:");
-                    ui.add_space(16.0);
+                    ui.add_space(padding);
 
                     self.external_drives.iter().enumerate().for_each(
                         |(i, drive): (usize, &&str)| {
@@ -120,7 +121,7 @@ impl eframe::App for MyApp {
                         },
                     );
 
-                    ui.add_space(16.0);
+                    ui.add_space(padding);
                     if ui.add(Button::new("Back")).clicked() {
                         self.screen = Screen::Locations;
                     }
@@ -129,7 +130,7 @@ impl eframe::App for MyApp {
             Screen::SdCard => {
                 egui::CentralPanel::default().show(context, |ui: &mut Ui| {
                     ui.heading("Select an SD Card:");
-                    ui.add_space(16.0);
+                    ui.add_space(padding);
 
                     self.sd_cards
                         .iter()
@@ -145,7 +146,7 @@ impl eframe::App for MyApp {
                             }
                         });
 
-                    ui.add_space(16.0);
+                    ui.add_space(padding);
                     if ui.add(Button::new("Back")).clicked() {
                         self.screen = Screen::Locations;
                     }
@@ -154,7 +155,7 @@ impl eframe::App for MyApp {
             Screen::NetworkDrive => {
                 egui::CentralPanel::default().show(context, |ui: &mut Ui| {
                     ui.heading("Select a Network Drive:");
-                    ui.add_space(16.0);
+                    ui.add_space(padding);
 
                     self.network_drives.iter().enumerate().for_each(
                         |(i, drive): (usize, &&str)| {
@@ -169,7 +170,7 @@ impl eframe::App for MyApp {
                         },
                     );
 
-                    ui.add_space(16.0);
+                    ui.add_space(padding);
                     if ui.add(Button::new("Back")).clicked() {
                         self.screen = Screen::Locations;
                     }

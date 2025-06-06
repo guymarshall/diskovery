@@ -1,23 +1,21 @@
-use std::process::exit;
+use std::{
+    fs::{DirEntry, ReadDir, read_dir},
+    process::exit,
+};
 
 use eframe::{CreationContext, NativeOptions, egui};
 use egui::{Button, Ui, vec2};
 
-use std::fs;
-
 fn list_drives() -> Vec<String> {
-    let mut drives: Vec<String> = Vec::new();
-    if let Ok(entries) = fs::read_dir("/sys/block") {
-        for entry in entries.flatten() {
-            if let Ok(file_name) = entry.file_name().into_string() {
-                // Filter out loop devices and ram devices
-                if !file_name.starts_with("loop") && !file_name.starts_with("ram") {
-                    drives.push(format!("/dev/{}", file_name));
-                }
-            }
-        }
-    }
-    drives
+    read_dir("/sys/block")
+        .into_iter()
+        .flat_map(|entries: ReadDir| entries.flatten())
+        .filter_map(|entry: DirEntry| entry.file_name().into_string().ok())
+        .filter(|file_name: &String| {
+            !file_name.starts_with("loop") && !file_name.starts_with("ram")
+        })
+        .map(|file_name: String| format!("/dev/{}", file_name))
+        .collect()
 }
 
 enum Screen {

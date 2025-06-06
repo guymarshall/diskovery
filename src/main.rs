@@ -3,39 +3,36 @@ use std::process::exit;
 use eframe::{CreationContext, NativeOptions, egui};
 use egui::{Button, Ui, vec2};
 
-#[derive(Clone, Copy)]
-struct Drive {
-    name: &'static str,
-}
+use std::fs;
 
-impl Drive {
-    fn new(name: &'static str) -> Self {
-        Self { name }
+fn list_drives() -> Vec<String> {
+    let mut drives: Vec<String> = Vec::new();
+    if let Ok(entries) = fs::read_dir("/sys/block") {
+        for entry in entries.flatten() {
+            if let Ok(file_name) = entry.file_name().into_string() {
+                // Filter out loop devices and ram devices
+                if !file_name.starts_with("loop") && !file_name.starts_with("ram") {
+                    drives.push(format!("/dev/{}", file_name));
+                }
+            }
+        }
     }
+    drives
 }
 
 enum Screen {
     DriveList,
-    DriveDetail { drive: Drive },
+    DriveDetail { drive: String },
 }
 
 struct MyApp {
     screen: Screen,
-    drives: Vec<Drive>,
+    drives: Vec<String>,
 }
 
 impl Default for MyApp {
     fn default() -> Self {
-        let drives: Vec<Drive> = vec![
-            Drive::new("/dev/sda"),
-            Drive::new("/dev/nvme0n1"),
-            Drive::new("/dev/sdb"),
-            Drive::new("/dev/sdc"),
-            Drive::new("/dev/mmcblk0"),
-            Drive::new("/dev/mmcblk1"),
-            Drive::new("//network/share1"),
-            Drive::new("//network/share2"),
-        ];
+        let drives: Vec<String> = list_drives();
 
         Self {
             screen: Screen::DriveList,
@@ -66,10 +63,12 @@ impl eframe::App for MyApp {
                     let button_spacing: f32 = 8.0;
 
                     for (i, drive) in self.drives.iter().enumerate() {
-                        let button: Button<'_> = Button::new(drive.name)
-                            .min_size(vec2(ui.available_width(), button_height));
+                        let button: Button<'_> =
+                            Button::new(drive).min_size(vec2(ui.available_width(), button_height));
                         if ui.add(button).clicked() {
-                            next_screen = Some(Screen::DriveDetail { drive: *drive });
+                            next_screen = Some(Screen::DriveDetail {
+                                drive: drive.clone(),
+                            });
                         }
                         if i < self.drives.len() - 1 {
                             ui.add_space(button_spacing);
@@ -81,7 +80,7 @@ impl eframe::App for MyApp {
             }
             Screen::DriveDetail { drive } => {
                 egui::CentralPanel::default().show(context, |ui: &mut Ui| {
-                    ui.heading(format!("Drive: {}", drive.name));
+                    ui.heading(format!("Drive: {}", drive));
                     ui.add_space(padding);
 
                     if ui.add(Button::new("Back")).clicked() {
@@ -91,7 +90,7 @@ impl eframe::App for MyApp {
                     ui.add_space(padding);
 
                     if ui.add(Button::new("Scan")).clicked() {
-                        println!("Scan clicked for {}", drive.name);
+                        println!("Scan clicked for {}", drive);
                     }
                 });
             }

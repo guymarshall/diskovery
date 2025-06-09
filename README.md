@@ -1,6 +1,6 @@
 # diskovery
 
-**diskovery** is an open-source data recovery tool written in Rust.
+**diskovery** is an open-source Linux data recovery tool written in Rust.
 
 ## 🚧 Project Status
 
